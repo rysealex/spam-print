@@ -5,10 +5,10 @@
 #include <time.h>
 #include <unistd.h>
 
-#define ASCII_A 97   // ascii value of 'a'
+#define ASCII_A 65   // ascii value of 'A'
 #define ASCII_Z 122  // ascii value of 'z'
-#define COLOR_MIN 31 // min color value
-#define COLOR_MAX 37 // max color value
+#define COLOR_MIN 30 // min color value
+#define COLOR_MAX 31 // max color value
 
 /*
     this program will attempt to match the user input word repeatedly until successful
@@ -100,8 +100,13 @@ int main(void)
             attempts++;
             char randLetter = rand() % (ASCII_Z - ASCII_A + 1) + ASCII_A; // random char in the alphabet
             result[i] = randLetter;
-            int randColor = rand() % (COLOR_MAX - COLOR_MIN + 1) + COLOR_MIN; // random color value
-            printf("\033[%dm%s\033[0m\n", randColor, result);
+            for (int j = 0; j < len; j++)
+            {
+                int randColor = rand() % (COLOR_MAX - COLOR_MIN + 1) + COLOR_MIN; // random color value
+                printf("\033[%dm%c\033[0m", randColor, result[j]);
+            } // display current result with each letter in a different color
+            printf("\n");
+            fflush(stdout); // immediate printing here
             if (randLetter == word[i])
             {
                 result[i] = randLetter;
@@ -115,12 +120,15 @@ int main(void)
 
     time_taken = ((double)(end - start)) / CLOCKS_PER_SEC; // calculate time here
 
-    printf("\033[32mTook %ld attempts in %f seconds\033[0m\n", attempts, time_taken); // display to the user
+    printf("\033[32mFound the word: \033[33m%s\033[0m\033[0m\n", result); // display to the user
+
+    printf("\033[32mTook \033[34m%ld\033[32m attempts in \033[34m%f\033[32m seconds\033[0m\n", attempts, time_taken); // display to the user
 
     result[len] = '\0'; // null terminate the result
 
     // de-allocate here
     free(word);
+    free(wordCheck);
     free(result);
     return 0;
 }
